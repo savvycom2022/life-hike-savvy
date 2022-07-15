@@ -1,0 +1,5 @@
+.book-item-container {
+  @apply container border border-blue-300 shadow rounded-md m-auto mt-10 sm:py-2 py-4 px-4 w-full h-auto sm:h-72;
+  max-width: 600px;
+}
+

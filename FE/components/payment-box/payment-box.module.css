@@ -1,0 +1,4 @@
+.payment-box-container{
+  @apply container border border-blue-300 shadow rounded-md m-auto mt-10 sm:py-2 py-10 px-4 w-full h-auto;
+  max-width: 600px;
+}

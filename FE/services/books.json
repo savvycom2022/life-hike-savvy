@@ -1,0 +1,30 @@
+[
+  {
+    "id": 1,
+    "name": "Sherlock Holmes",
+    "category": "Fiction",
+    "price": 100,
+    "image": "https://www.fanbolt.com/storage/2022/01/Sherlock-Holmes-3-Poster-1.jpg"
+  },
+  {
+    "id": 2,
+    "name": "Sherlock Holmes",
+    "category": "Fiction",
+    "price": 100,
+    "image": "https://www.fanbolt.com/storage/2022/01/Sherlock-Holmes-3-Poster-1.jpg"
+  },
+  {
+    "id": 4,
+    "name": "Sherlock Holmes",
+    "category": "Fiction",
+    "price": 100,
+    "image": "https://www.fanbolt.com/storage/2022/01/Sherlock-Holmes-3-Poster-1.jpg"
+  },
+  {
+    "id": 5,
+    "name": "Sherlock Holmes",
+    "category": "Fiction",
+    "price": 100,
+    "image": "https://www.fanbolt.com/storage/2022/01/Sherlock-Holmes-3-Poster-1.jpg"
+  }
+]

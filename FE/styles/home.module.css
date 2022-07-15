@@ -1,0 +1,8 @@
+.home-container {
+  @apply m-auto pb-10;
+  width: 90vw;
+}
+
+.back-button-container {
+  @apply container rounded-md m-auto mt-1 sm:py-2 py-1 px-4 w-full h-auto;
+}
