@@ -31,4 +31,11 @@ export class OrderController {
     const response = await this.orderService.createOrder(data);
     return new ApiResult().success(response);
   }
+
+  @Post('payment/hook')
+  @UsePipes(new ValidationPipe({ transform: true }))
+  async paymentHook(@Body() data: any) {
+    console.log(data);
+    return new ApiResult().success();
+  }
 }

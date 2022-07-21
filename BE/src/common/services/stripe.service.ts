@@ -1,5 +1,6 @@
 import { ConfigService } from './config.service';
 import { Stripe } from 'stripe';
+import { PaymentConfig } from '../constants/constants';
 
 export class StripeService {
   private readonly stripeConnection = new Stripe(
@@ -18,9 +19,19 @@ export class StripeService {
 
   async createPrice({ unitAmount = 0, productId = '' }) {
     return await this.stripeConnection.prices.create({
-      currency: 'usd',
+      currency: PaymentConfig.currency,
       unit_amount: unitAmount,
       product: productId,
+    });
+  }
+
+  async createPaymentIntent({ amount = 0, orderId = '', successUrl = '' }) {
+    return await this.stripeConnection.paymentIntents.create({
+      amount: amount,
+      currency: PaymentConfig.currency,
+      return_url: successUrl,
+      metadata: { orderId },
+      confirm: true,
     });
   }
 

@@ -23,6 +23,12 @@ export class Order {
   priceId: string;
 
   @Prop()
+  transactionId: string;
+
+  @Prop()
+  paymentInfo: string;
+
+  @Prop()
   quantity: number;
 
   @Prop()
