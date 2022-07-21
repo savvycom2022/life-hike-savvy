@@ -4,6 +4,8 @@ import {
   Get,
   Post,
   Query,
+  RawBodyRequest,
+  Req,
   Request,
   UsePipes,
   ValidationPipe,
@@ -35,8 +37,8 @@ export class OrderController {
 
   @Post('payment/hook')
   @UsePipes(new ValidationPipe({ transform: true }))
-  async paymentHook(@Request() request, @Body() data: any) {
-    await this.orderService.processOrderHook(data, request);
+  async paymentHook(@Req() req: RawBodyRequest<Request>) {
+    await this.orderService.processOrderHook(req.body, req);
     return new ApiResult().success();
   }
 }
