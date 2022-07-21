@@ -26,7 +26,6 @@ export class OrderService {
           {
             quantity: order.quantity,
             priceId: order.priceId,
-            orderId: order._id,
           },
           successUrl,
         );
