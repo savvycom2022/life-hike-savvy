@@ -60,19 +60,23 @@ export class OrderService {
     }
   }
 
-  async processOrderHook(stripeResponse: any, request: any) {
-    const response = stripeResponse?.data?.object;
+  async processOrderHook(request: any) {
     let event;
-    switch (stripeResponse?.type) {
-      case PaymentEvents.PAYMENT_INTENT_SUCCESS:
-        console.log('@== processOrderHook', response);
-        console.log('@== processOrderHook headers', request.headers);
-        const sig = request.headers['stripe-signature'];
-        event = await this.stripeService.constructEvent(request.body, sig);
-        break;
-      default:
-        console.log('Hooks: Unhandled: ', stripeResponse);
+    try {
+      switch (request.body?.type) {
+        case PaymentEvents.PAYMENT_INTENT_SUCCESS:
+          const sig = request.headers['stripe-signature'];
+          console.log('@== processOrderHook sig', sig);
+          console.log('@== processOrderHook', request.body);
+          event = await this.stripeService.constructEvent(request.body, sig);
+          break;
+        default:
+          console.log('Hooks: Unhandled: ', request.body);
+      }
+    } catch (err) {
+      console.log('@== processOrderHook err ', err);
     }
+
     return event;
   }
 }
