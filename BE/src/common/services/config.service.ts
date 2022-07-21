@@ -18,6 +18,7 @@ export interface DBConfig {
 export interface StripeConfig {
   pubKey: string;
   secretKey: string;
+  hookSecretKey: string;
 }
 
 export interface RedisConfig {
@@ -38,6 +39,7 @@ export class ConfigService {
     FE_URL: Joi.string().required(),
     STRIPE_SECRET: Joi.string(),
     STRIPE_PUBLIC: Joi.string(),
+    STRIPE_ENDPOINT_SECRET: Joi.string(),
   };
 
   constructor(filePath: string) {
@@ -62,6 +64,7 @@ export class ConfigService {
     return {
       pubKey: String(this.envConfig.STRIPE_PUBLIC),
       secretKey: String(this.envConfig.STRIPE_SECRET),
+      hookSecretKey: String(this.envConfig.STRIPE_ENDPOINT_SECRET),
     };
   }
 

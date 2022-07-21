@@ -1,6 +1,8 @@
 import { ConfigService } from './config.service';
 import { Stripe } from 'stripe';
 import { PaymentConfig } from '../constants/constants';
+import { ApiError } from '../classes/api-error';
+import { Messages } from '../constants/messages';
 
 export class StripeService {
   private readonly stripeConnection = new Stripe(
@@ -50,5 +52,17 @@ export class StripeService {
     }
 
     return await this.stripeConnection.paymentLinks.create(paymentObject);
+  }
+
+  async constructEvent(data: any, sig: string) {
+    try {
+      return await this.stripeConnection.webhooks.constructEvent(
+        data,
+        sig,
+        this.configService.stripe.hookSecretKey,
+      );
+    } catch (error) {
+      throw new ApiError(Messages.INVALID_STRIPE_EVENT);
+    }
   }
 }

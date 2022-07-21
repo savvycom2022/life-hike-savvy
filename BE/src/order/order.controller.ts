@@ -4,6 +4,7 @@ import {
   Get,
   Post,
   Query,
+  Request,
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
@@ -34,8 +35,8 @@ export class OrderController {
 
   @Post('payment/hook')
   @UsePipes(new ValidationPipe({ transform: true }))
-  async paymentHook(@Body() data: any) {
-    await this.orderService.processOrderHook(data);
+  async paymentHook(@Request() request, @Body() data: any) {
+    await this.orderService.processOrderHook(data, request);
     return new ApiResult().success();
   }
 }
