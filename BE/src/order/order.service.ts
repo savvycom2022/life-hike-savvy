@@ -7,6 +7,7 @@ import { StripeService } from '../common/services/stripe.service';
 import { Order, OrderDocument } from '../database/schemas/order.schema';
 import { CreateOrderDto } from './dtos/create-order.dto';
 import { Book, BookDocument } from '../database/schemas/book.schema';
+import { PaymentEvents } from '../common/constants/constants';
 
 @Injectable()
 export class OrderService {
@@ -57,5 +58,17 @@ export class OrderService {
         data: null,
       };
     }
+  }
+
+  async processOrderHook(stripeResponse: any) {
+    const response = stripeResponse?.data?.object;
+    switch (stripeResponse?.type) {
+      case PaymentEvents.PAYMENT_INTENT_SUCCESS:
+        console.log('@== processOrderHook', response);
+        break;
+      default:
+        console.log('Hooks: Nothing can handle this message: ', stripeResponse);
+    }
+    return true;
   }
 }

@@ -5,3 +5,7 @@ export const AppConfig = {
 export const PaymentConfig = {
   currency: 'usd',
 };
+
+export const PaymentEvents = {
+  PAYMENT_INTENT_SUCCESS: 'payment_intent.succeeded',
+};

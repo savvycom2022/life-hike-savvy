@@ -35,7 +35,7 @@ export class OrderController {
   @Post('payment/hook')
   @UsePipes(new ValidationPipe({ transform: true }))
   async paymentHook(@Body() data: any) {
-    console.log(data);
+    await this.orderService.processOrderHook(data);
     return new ApiResult().success();
   }
 }
