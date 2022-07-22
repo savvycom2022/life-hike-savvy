@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document } from 'mongoose';
+import { Document, Schema as SchemaType } from 'mongoose';
 
 export type OrderDocument = Order & Document;
 
@@ -25,8 +25,8 @@ export class Order {
   @Prop()
   checkoutSessionId: string;
 
-  @Prop()
-  paymentInfo: string;
+  @Prop({ type: SchemaType.Types.Mixed })
+  paymentInfo: SchemaType.Types.Mixed;
 
   @Prop()
   quantity: number;

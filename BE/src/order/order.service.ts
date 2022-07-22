@@ -23,26 +23,20 @@ export class OrderService {
     private configService: ConfigService,
   ) {}
 
-  async getPaymentLink(orderId: string) {
+  async getPaymentLink(order: Order) {
     try {
-      const order = await this.orderModel.findOne({ _id: orderId });
-      if (order) {
-        const successUrl = `${this.configService.app.feUrl}/order-created`;
-        const checkoutSession =
-          await this.stripeService.stripe.checkout.sessions.create({
-            line_items: [{ price: order.priceId, quantity: order.quantity }],
-            cancel_url: successUrl,
-            success_url: successUrl,
-            mode: 'payment',
-            metadata: {
-              orderId,
-            },
-          });
-        order.checkoutSessionId = checkoutSession.id;
-        await order.save();
-        console.log('@== checkoutSession', checkoutSession);
-        return checkoutSession;
-      }
+      const successUrl = `${this.configService.app.feUrl}/order-created`;
+      const checkoutSession =
+        await this.stripeService.stripe.checkout.sessions.create({
+          line_items: [{ price: order.priceId, quantity: order.quantity }],
+          cancel_url: successUrl,
+          success_url: successUrl,
+          mode: 'payment',
+        });
+      console.log('@== checkoutSession', checkoutSession);
+
+      order.checkoutSessionId = checkoutSession.id;
+      return checkoutSession;
     } catch (er) {
       console.log(er);
     }
@@ -61,12 +55,13 @@ export class OrderService {
         quantity: 1,
       });
 
-      const checkoutSession = await this.getPaymentLink(order._id.toString());
+      const checkoutSession = await this.getPaymentLink(order);
       order.checkoutSessionId = checkoutSession.id;
       await order.save();
 
       return checkoutSession;
     } catch (error) {
+      console.log(error);
       throw ApiError.error(Messages.CREATE_ORDER_FAILED);
     }
   }
@@ -78,10 +73,16 @@ export class OrderService {
     try {
       switch (request.body?.type) {
         case PaymentEvents.CHECKOUT_COMPLETE:
-          console.log(
-            '@== ' + PaymentEvents.CHECKOUT_COMPLETE,
-            event.data.object,
-          );
+          const { id = '' } = { ...event.data.object };
+          const order = await this.orderModel.findOne({
+            checkoutSessionId: id,
+          });
+
+          if (order) {
+            order.status = OrderStatus.DONE;
+            order.paymentInfo = event.data.object as any;
+            await order.save();
+          }
 
           break;
         default:
