@@ -6,6 +6,7 @@ import { ConfigService } from './common/services/config.service';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
     logger: console,
+    rawBody: true,
   });
   const configService: ConfigService = app.get(ConfigService);
 
