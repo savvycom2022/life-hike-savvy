@@ -68,7 +68,7 @@ export class OrderService {
           const sig = request.headers['stripe-signature'];
           console.log('@== processOrderHook sig', sig);
           console.log('@== processOrderHook', request.body);
-          event = await this.stripeService.constructEvent(request.body, sig);
+          event = await this.stripeService.constructEvent(request.rawBody, sig);
           break;
         default:
           console.log('Hooks: Unhandled: ', request.body);
