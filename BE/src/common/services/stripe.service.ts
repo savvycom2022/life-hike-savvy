@@ -56,10 +56,6 @@ export class StripeService {
   }
 
   async constructEvent(data: any, sig: string) {
-    console.log(
-      '@== this.configService.stripe.hookSecretKey',
-      this.configService.stripe.hookSecretKey,
-    );
     try {
       return await this.stripeConnection.webhooks.constructEvent(
         data,
@@ -67,7 +63,6 @@ export class StripeService {
         this.configService.stripe.hookSecretKey,
       );
     } catch (error) {
-      console.log('@== error', error);
       throw new ApiError(Messages.INVALID_STRIPE_EVENT);
     }
   }
