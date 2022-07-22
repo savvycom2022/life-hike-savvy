@@ -69,11 +69,8 @@ export class OrderService {
         case PaymentEvents.PAYMENT_INTENT_SUCCESS:
           break;
         default:
-          console.log('Hooks: Unhandled: ', request.body);
       }
-    } catch (err) {
-      console.log('@== processOrderHook err ', err);
-    }
+    } catch (err) {}
 
     return event;
   }
