@@ -67,7 +67,7 @@ export class OrderService {
         case PaymentEvents.PAYMENT_INTENT_SUCCESS:
           const sig = request.headers['stripe-signature'];
           console.log('@== processOrderHook sig', sig);
-          console.log('@== processOrderHook', request.body);
+          console.log('@== processOrderHook', request.rawBody);
           event = await this.stripeService.constructEvent(request.rawBody, sig);
           break;
         default:
