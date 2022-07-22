@@ -22,7 +22,7 @@ export class BookService {
     const book = new this.bookModel(data);
     const product = await this.stripeService.createProduct(book.name);
     const price = await this.stripeService.createPrice({
-      unitAmount: book.price || 0,
+      unitAmount: parseInt(`${book.price}`, 10) * 100 || 0,
       productId: product.id || '',
     });
     book.productId = product.id;
