@@ -11,6 +11,7 @@ export class StripeService {
       apiVersion: '2020-08-27',
     },
   );
+
   constructor(private configService: ConfigService) {}
 
   async createProduct(name: string) {
@@ -66,6 +67,7 @@ export class StripeService {
         this.configService.stripe.hookSecretKey,
       );
     } catch (error) {
+      console.log('@== error', error);
       throw new ApiError(Messages.INVALID_STRIPE_EVENT);
     }
   }
