@@ -28,14 +28,25 @@ export class OrderService {
       const order = await this.orderModel.findOne({ _id: orderId });
       if (order) {
         const successUrl = `${this.configService.app.feUrl}/order-created`;
-        const paymentLink = await this.stripeService.createPaymentLink(
-          {
-            quantity: order.quantity,
-            priceId: order.priceId,
-          },
+        const paymentLink = await this.stripeService.createPaymentLink({
+          quantity: order.quantity,
+          priceId: order.priceId,
           successUrl,
-        );
+          metadata: {
+            orderId,
+          },
+        });
         console.log('@== paymentLink', paymentLink);
+        const checkoutSession =
+          await this.stripeService.stripe.checkout.sessions.create({
+            line_items: [{ price: order.priceId, quantity: order.quantity }],
+            cancel_url: successUrl,
+            success_url: successUrl,
+            metadata: {
+              orderId,
+            },
+          });
+        console.log('@== checkoutSession', checkoutSession);
         return paymentLink;
       }
     } catch (er) {

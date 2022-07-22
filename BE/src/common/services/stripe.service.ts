@@ -14,6 +14,10 @@ export class StripeService {
 
   constructor(private configService: ConfigService) {}
 
+  get stripe(): Stripe {
+    return this.stripeConnection;
+  }
+
   async createProduct({ name = '', thumbnail = '' }) {
     return await this.stripeConnection.products.create({
       name,
@@ -29,9 +33,15 @@ export class StripeService {
     });
   }
 
-  async createPaymentLink({ quantity = 0, priceId = '' }, successUrl: any) {
+  async createPaymentLink({
+    quantity = 0,
+    priceId = '',
+    successUrl = '',
+    metadata = {},
+  }) {
     const paymentObject = {
       line_items: [{ price: priceId, quantity }],
+      metadata,
     };
 
     if (successUrl) {
