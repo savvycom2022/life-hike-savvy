@@ -20,7 +20,10 @@ export class BookService {
 
   async createBook(data: CreateBookDto): Promise<Book> {
     const book = new this.bookModel(data);
-    const product = await this.stripeService.createProduct(book.name);
+    const product = await this.stripeService.createProduct({
+      name: book.name,
+      thumbnail: book.thumbnail,
+    });
     const price = await this.stripeService.createPrice({
       unitAmount: parseInt(`${book.price}`, 10) * 100 || 0,
       productId: product.id || '',

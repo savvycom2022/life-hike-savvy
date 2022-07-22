@@ -14,9 +14,10 @@ export class StripeService {
 
   constructor(private configService: ConfigService) {}
 
-  async createProduct(name: string) {
+  async createProduct({ name = '', thumbnail = '' }) {
     return await this.stripeConnection.products.create({
       name,
+      images: thumbnail ? [thumbnail] : [],
     });
   }
 
@@ -25,16 +26,6 @@ export class StripeService {
       currency: PaymentConfig.currency,
       unit_amount: unitAmount,
       product: productId,
-    });
-  }
-
-  async createPaymentIntent({ amount = 0, orderId = '', successUrl = '' }) {
-    return await this.stripeConnection.paymentIntents.create({
-      amount: amount,
-      currency: PaymentConfig.currency,
-      return_url: successUrl,
-      metadata: { orderId },
-      confirm: true,
     });
   }
 

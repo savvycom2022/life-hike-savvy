@@ -9,6 +9,9 @@ export class Book {
   name: string;
 
   @Prop()
+  thumbnail: string;
+
+  @Prop()
   categoryId: string;
 
   @Prop()
