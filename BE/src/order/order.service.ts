@@ -42,6 +42,7 @@ export class OrderService {
             line_items: [{ price: order.priceId, quantity: order.quantity }],
             cancel_url: successUrl,
             success_url: successUrl,
+            mode: 'payment',
             metadata: {
               orderId,
             },
