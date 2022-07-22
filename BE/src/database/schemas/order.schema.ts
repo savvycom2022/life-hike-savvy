@@ -23,7 +23,7 @@ export class Order {
   priceId: string;
 
   @Prop()
-  transactionId: string;
+  checkoutSessionId: string;
 
   @Prop()
   paymentInfo: string;

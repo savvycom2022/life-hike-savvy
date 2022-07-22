@@ -7,5 +7,5 @@ export const PaymentConfig = {
 };
 
 export const PaymentEvents = {
-  PAYMENT_INTENT_SUCCESS: 'payment_intent.succeeded',
+  CHECKOUT_COMPLETE: 'checkout.session.completed',
 };

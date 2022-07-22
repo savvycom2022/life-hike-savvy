@@ -28,15 +28,6 @@ export class OrderService {
       const order = await this.orderModel.findOne({ _id: orderId });
       if (order) {
         const successUrl = `${this.configService.app.feUrl}/order-created`;
-        const paymentLink = await this.stripeService.createPaymentLink({
-          quantity: order.quantity,
-          priceId: order.priceId,
-          successUrl,
-          metadata: {
-            orderId,
-          },
-        });
-        console.log('@== paymentLink', paymentLink);
         const checkoutSession =
           await this.stripeService.stripe.checkout.sessions.create({
             line_items: [{ price: order.priceId, quantity: order.quantity }],
@@ -47,8 +38,10 @@ export class OrderService {
               orderId,
             },
           });
+        order.checkoutSessionId = checkoutSession.id;
+        await order.save();
         console.log('@== checkoutSession', checkoutSession);
-        return paymentLink;
+        return checkoutSession;
       }
     } catch (er) {
       console.log(er);
@@ -67,8 +60,12 @@ export class OrderService {
         status: OrderStatus.PENDING,
         quantity: 1,
       });
+
+      const checkoutSession = await this.getPaymentLink(order._id.toString());
+      order.checkoutSessionId = checkoutSession.id;
       await order.save();
-      return await this.getPaymentLink(order._id);
+
+      return checkoutSession;
     } catch (error) {
       throw ApiError.error(Messages.CREATE_ORDER_FAILED);
     }
@@ -80,7 +77,12 @@ export class OrderService {
     console.log('@== event', event.data.object);
     try {
       switch (request.body?.type) {
-        case PaymentEvents.PAYMENT_INTENT_SUCCESS:
+        case PaymentEvents.CHECKOUT_COMPLETE:
+          console.log(
+            '@== ' + PaymentEvents.CHECKOUT_COMPLETE,
+            event.data.object,
+          );
+
           break;
         default:
       }
