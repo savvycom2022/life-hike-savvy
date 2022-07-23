@@ -24,6 +24,11 @@ export class CreateBookDto {
   @IsOptional()
   thumbnail: string;
 
+  @ApiProperty({ required: false, type: 'string' })
+  @IsString()
+  @IsOptional()
+  description: string;
+
   @ApiProperty({ required: false, type: 'number' })
   @IsNumber()
   @IsOptional()
