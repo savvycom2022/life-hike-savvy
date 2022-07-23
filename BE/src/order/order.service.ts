@@ -24,9 +24,9 @@ export class OrderService {
     private configService: ConfigService,
   ) {}
 
-  async getCheckoutSession(order: Order) {
-    const successUrl = `${this.configService.app.feUrl}/order-created`;
-    const cancelUrl = `${this.configService.app.feUrl}/order-cancelled`;
+  async getCheckoutSession(order: OrderDocument) {
+    const successUrl = `${this.configService.app.feUrl}/order-created/${order?._id}`;
+    const cancelUrl = `${this.configService.app.feUrl}/order-cancelled/${order?._id}`;
     return await this.stripeService.stripe.checkout.sessions.create({
       line_items: [{ price: order.priceId, quantity: order.quantity }],
       cancel_url: cancelUrl,
@@ -57,7 +57,7 @@ export class OrderService {
       order.paymentUrl = checkoutSession.url;
       await order.save();
 
-      return checkoutSession;
+      return order;
     } catch (error) {
       console.log(error);
       throw ApiError.error(Messages.CREATE_ORDER_FAILED);
@@ -65,9 +65,13 @@ export class OrderService {
   }
 
   async processOrderHook(request: any) {
-    const sig = request.headers['stripe-signature'];
-    const event = await this.stripeService.constructEvent(request.rawBody, sig);
     try {
+      const sig = request.headers['stripe-signature'];
+      const event = await this.stripeService.constructEvent(
+        request.rawBody,
+        sig,
+      );
+
       switch (request.body?.type) {
         case PaymentEvents.CHECKOUT_COMPLETE:
           await this.checkoutCompleteEventHandler(event.data.object);
@@ -77,9 +81,11 @@ export class OrderService {
           break;
         default:
       }
-    } catch (err) {}
+    } catch (err) {
+      throw ApiError.error(Messages.PROCESS_STRIPE_EVENT_FAILED);
+    }
 
-    return event;
+    return true;
   }
 
   async checkoutCompleteEventHandler(object: any) {
