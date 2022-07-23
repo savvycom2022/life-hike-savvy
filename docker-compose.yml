@@ -1,0 +1,10 @@
+version: "3.9"
+services:
+  backend:
+    build: ./BE
+    ports:
+      - "8005:3003"
+  frontend:
+    build: ./FE
+    ports:
+      - "8006:3000"
