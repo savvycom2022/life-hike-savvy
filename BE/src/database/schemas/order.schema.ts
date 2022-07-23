@@ -32,6 +32,9 @@ export class Order {
   paymentIntent: SchemaType.Types.Mixed;
 
   @Prop()
+  paymentUrl: string;
+
+  @Prop()
   quantity: number;
 
   @Prop()

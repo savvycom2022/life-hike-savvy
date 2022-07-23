@@ -13,6 +13,7 @@ import { Book, BookDocument } from '../database/schemas/book.schema';
 import { PaymentEvents } from '../common/constants/constants';
 import { ApiError } from '../common/classes/api-error';
 import { Messages } from '../common/constants/messages';
+import { GetOrderDto } from './dtos/get-order.dto';
 
 @Injectable()
 export class OrderService {
@@ -24,18 +25,18 @@ export class OrderService {
   ) {}
 
   async getCheckoutSession(order: Order) {
-    try {
-      const successUrl = `${this.configService.app.feUrl}/order-created`;
-      const cancelUrl = `${this.configService.app.feUrl}/order-cancelled`;
-      return await this.stripeService.stripe.checkout.sessions.create({
-        line_items: [{ price: order.priceId, quantity: order.quantity }],
-        cancel_url: cancelUrl,
-        success_url: successUrl,
-        mode: 'payment',
-      });
-    } catch (er) {
-      console.log(er);
-    }
+    const successUrl = `${this.configService.app.feUrl}/order-created`;
+    const cancelUrl = `${this.configService.app.feUrl}/order-cancelled`;
+    return await this.stripeService.stripe.checkout.sessions.create({
+      line_items: [{ price: order.priceId, quantity: order.quantity }],
+      cancel_url: cancelUrl,
+      success_url: successUrl,
+      mode: 'payment',
+    });
+  }
+
+  async getOrderById(data: GetOrderDto) {
+    return this.orderModel.findOne({ _id: data.orderId });
   }
 
   async createOrder(data: CreateOrderDto) {
@@ -53,6 +54,7 @@ export class OrderService {
 
       const checkoutSession = await this.getCheckoutSession(order);
       order.paymentIntentId = checkoutSession.payment_intent as string;
+      order.paymentUrl = checkoutSession.url;
       await order.save();
 
       return checkoutSession;
@@ -65,7 +67,6 @@ export class OrderService {
   async processOrderHook(request: any) {
     const sig = request.headers['stripe-signature'];
     const event = await this.stripeService.constructEvent(request.rawBody, sig);
-    console.log('@== event', event.data.object);
     try {
       switch (request.body?.type) {
         case PaymentEvents.CHECKOUT_COMPLETE:
@@ -100,8 +101,6 @@ export class OrderService {
       paymentIntentId,
     });
 
-    console.log('@== paymentIntentId', paymentIntentId);
-    console.log('@== order', order);
     if (order) {
       order.paymentIntent = object;
       await order.save();
