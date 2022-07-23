@@ -95,7 +95,7 @@ export class OrderService {
   }
 
   async paymentIntentSuccessEventHandler(object: any) {
-    const paymentIntentId = object?.payment_intent;
+    const paymentIntentId = object?.id;
     const order = await this.orderModel.findOne({
       paymentIntentId,
     });
