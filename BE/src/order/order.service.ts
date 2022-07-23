@@ -35,7 +35,7 @@ export class OrderService {
         });
       console.log('@== checkoutSession', checkoutSession);
 
-      order.checkoutSessionId = checkoutSession.id;
+      order.paymentIntentId = checkoutSession.payment_intent as string;
       return checkoutSession;
     } catch (er) {
       console.log(er);
@@ -56,7 +56,7 @@ export class OrderService {
       });
 
       const checkoutSession = await this.getPaymentLink(order);
-      order.checkoutSessionId = checkoutSession.id;
+      order.paymentIntentId = checkoutSession.payment_intent as string;
       await order.save();
 
       return checkoutSession;
@@ -73,22 +73,40 @@ export class OrderService {
     try {
       switch (request.body?.type) {
         case PaymentEvents.CHECKOUT_COMPLETE:
-          const { id = '' } = { ...event.data.object };
-          const order = await this.orderModel.findOne({
-            checkoutSessionId: id,
-          });
-
-          if (order) {
-            order.status = OrderStatus.DONE;
-            order.paymentInfo = event.data.object as any;
-            await order.save();
-          }
-
+          await this.checkoutCompleteEventHandler(event.data.object);
+          break;
+        case PaymentEvents.PAYMENT_INTENT_SUCCESS:
+          await this.paymentIntentSuccessEventHandler(event.data.object);
           break;
         default:
       }
     } catch (err) {}
 
     return event;
+  }
+
+  async checkoutCompleteEventHandler(object: any) {
+    const paymentIntentId = object?.payment_intent;
+    const order = await this.orderModel.findOne({
+      paymentIntentId,
+    });
+
+    if (order) {
+      order.status = OrderStatus.DONE;
+      order.paymentInfo = object;
+      await order.save();
+    }
+  }
+
+  async paymentIntentSuccessEventHandler(object: any) {
+    const paymentIntentId = object?.payment_intent;
+    const order = await this.orderModel.findOne({
+      paymentIntentId,
+    });
+
+    if (order) {
+      order.paymentIntent = object;
+      await order.save();
+    }
   }
 }

@@ -23,10 +23,13 @@ export class Order {
   priceId: string;
 
   @Prop()
-  checkoutSessionId: string;
+  paymentIntentId: string;
 
   @Prop({ type: SchemaType.Types.Mixed })
   paymentInfo: SchemaType.Types.Mixed;
+
+  @Prop({ type: SchemaType.Types.Mixed })
+  paymentIntent: SchemaType.Types.Mixed;
 
   @Prop()
   quantity: number;
