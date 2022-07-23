@@ -23,20 +23,16 @@ export class OrderService {
     private configService: ConfigService,
   ) {}
 
-  async getPaymentLink(order: Order) {
+  async getCheckoutSession(order: Order) {
     try {
       const successUrl = `${this.configService.app.feUrl}/order-created`;
-      const checkoutSession =
-        await this.stripeService.stripe.checkout.sessions.create({
-          line_items: [{ price: order.priceId, quantity: order.quantity }],
-          cancel_url: successUrl,
-          success_url: successUrl,
-          mode: 'payment',
-        });
-      console.log('@== checkoutSession', checkoutSession);
-
-      order.paymentIntentId = checkoutSession.payment_intent as string;
-      return checkoutSession;
+      const cancelUrl = `${this.configService.app.feUrl}/order-cancelled`;
+      return await this.stripeService.stripe.checkout.sessions.create({
+        line_items: [{ price: order.priceId, quantity: order.quantity }],
+        cancel_url: cancelUrl,
+        success_url: successUrl,
+        mode: 'payment',
+      });
     } catch (er) {
       console.log(er);
     }
@@ -55,7 +51,7 @@ export class OrderService {
         quantity: 1,
       });
 
-      const checkoutSession = await this.getPaymentLink(order);
+      const checkoutSession = await this.getCheckoutSession(order);
       order.paymentIntentId = checkoutSession.payment_intent as string;
       await order.save();
 
@@ -70,6 +66,7 @@ export class OrderService {
     const sig = request.headers['stripe-signature'];
     const event = await this.stripeService.constructEvent(request.rawBody, sig);
     console.log('@== event', event.data.object);
+    console.log('@== request.body?.type', request.body?.type);
     try {
       switch (request.body?.type) {
         case PaymentEvents.CHECKOUT_COMPLETE:
