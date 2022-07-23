@@ -66,7 +66,6 @@ export class OrderService {
     const sig = request.headers['stripe-signature'];
     const event = await this.stripeService.constructEvent(request.rawBody, sig);
     console.log('@== event', event.data.object);
-    console.log('@== request.body?.type', request.body?.type);
     try {
       switch (request.body?.type) {
         case PaymentEvents.CHECKOUT_COMPLETE:
@@ -101,6 +100,8 @@ export class OrderService {
       paymentIntentId,
     });
 
+    console.log('@== paymentIntentId', paymentIntentId);
+    console.log('@== order', order);
     if (order) {
       order.paymentIntent = object;
       await order.save();
