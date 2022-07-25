@@ -11,7 +11,8 @@ Application use NestJS framework & Stripe Library
 #### Steps:
 1. `cd life-hike-savvy`
 2. `docker-compose up`
-3. Access `http://localhost:3000`
+3. Access `http://localhost:8006` for Web app
+4. Access `http://localhost:8005/api` for Api Documentation
 
 > Note:
 > - Backend will be served on http://localhost:3003
