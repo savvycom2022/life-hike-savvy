@@ -1,9 +1,7 @@
 import React from "react";
 import styles from "./payment-box.module.css";
-import { IBook } from "@/utils/types/book";
 import Button, { ButtonType } from "@/atomics/button";
 import { useForm } from "react-hook-form";
-import { useRouter } from "next/router";
 import usePayment from "@/hooks/payment";
 
 export default function PaymentBox() {
@@ -13,14 +11,13 @@ export default function PaymentBox() {
     formState: { errors },
   } = useForm();
   const { book, onCreateOrder } = usePayment();
-  const router = useRouter();
   const handleBuy = (data: any) => {
     onCreateOrder(data.name, data.phone);
     // router.push("/order-created");
   };
   return (
     <div className={styles["payment-box-container"]}>
-      <div className="w-11/12 max-w-450 m-auto px-8 py-20">
+      <div className="w-11/12 px-8 py-20 m-auto max-w-450">
         <div>Selected:</div>
         <div className="flex justify-between">
           <div>{book?.name}</div>
@@ -32,20 +29,20 @@ export default function PaymentBox() {
           })}
           className="p-0"
         >
-          <div className="border border-solid rounded-lg w-full max-w-450 px-4 py-8 m-auto my-10">
+          <div className="w-full px-4 py-8 m-auto my-10 border border-solid rounded-lg max-w-450">
             <span>Customer name: &nbsp;</span>
             <input
-              className="app-input w-48"
+              className="w-48 app-input"
               {...register("name", { required: true })}
             />
             {errors.name && (
               <div className="text-xs text-red-500">This field is required</div>
             )}
           </div>
-          <div className="border border-solid rounded-lg w-full max-w-450 px-4 py-8 m-auto my-10">
+          <div className="w-full px-4 py-8 m-auto my-10 border border-solid rounded-lg max-w-450">
             <span>Phone number: &nbsp;</span>
             <input
-              className="app-input w-48"
+              className="w-48 app-input"
               {...register("phone", {
                 required: true,
                 maxLength: 12,
@@ -65,7 +62,7 @@ export default function PaymentBox() {
           <div className="text-center">
             <Button
               type={ButtonType.SUBMIT}
-              className="m-auto px-10 h-10 rounded-sm hover:bg-slate-100"
+              className="h-10 px-10 m-auto rounded-sm hover:bg-slate-100"
             >
               Buy
             </Button>

@@ -12,7 +12,7 @@ export default function ProductPayment() {
       <PageHeader title="Payment Page" />
       <div className="m-auto w-90">
         <br />
-        <div className={styles['back-button-container']}>
+        <div className={styles["back-button-container"]}>
           <Button onClick={() => router.push(`/`)}>Back to Home</Button>
         </div>
         <PaymentBox />

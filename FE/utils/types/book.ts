@@ -15,7 +15,8 @@ export interface IBook {
   name: string;
   category: IBookCat;
   price: number;
-  image: string;
+  thumbnail: string;
   productId?: string;
   priceId?: string;
+  description?: string;
 }

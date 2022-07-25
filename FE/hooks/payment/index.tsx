@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { IBook } from "@/utils/types/book";
-import { getBookById, createOrder } from "@/services/books";
+import { getBookById } from "@/services/books";
+import { createOrder } from "@/services/order";
 import { useRouter } from "next/router";
 
 export default function usePayment() {
@@ -18,9 +19,8 @@ export default function usePayment() {
       quantity: 1,
     };
     const response = await createOrder(createOrderObj);
-    if (response?.data?.data?.url) {
-      window.open(response.data.data.url, '_blank');
-    }
+    console.log('response', response)
+      window.open(response?.paymentUrl, '_blank');
   };
 
   const getBook = async () => {

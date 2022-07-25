@@ -1,6 +1,5 @@
 import { IBook } from "@/utils/types/book";
 const axios = require("axios").default;
-const listBooks = require("./books.json");
 // const apiUrl = process.env.API_URL;
 // const apiUrl = "http://nartsoftware.com";
 const apiUrl = "http://localhost:3003";
@@ -25,17 +24,3 @@ export const getBookById = async (id: string): Promise<IBook | null> => {
   return data.data.data;
 };
 
-
-interface IOrder {
-  bookId: string;
-  productId?: string;
-  priceId?: string;
-  username: string;
-  phone: string;
-  quantity: number;
-}
-export const createOrder = async (order: IOrder) => {
-  const data = await axios.post(`${apiUrl}/order`, order);
-  console.log('data', data)
-  return data;
-}

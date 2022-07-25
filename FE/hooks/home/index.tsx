@@ -3,7 +3,6 @@ import { getListBooksService } from "@/services/books";
 import { IBook } from "@/utils/types/book";
 export default function useHome() {
   const [page, setPage] = useState(0);
-  const [listCats, setListCats] = useState([]);
   const [listBooks, setListBooks] = useState<IBook[]>([]);
   const [hasMore, setHasMore] = useState(true);
   const loadMore = () => {

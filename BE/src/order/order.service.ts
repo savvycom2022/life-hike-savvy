@@ -36,7 +36,13 @@ export class OrderService {
   }
 
   async getOrderById(data: GetOrderDto) {
-    return this.orderModel.findOne({ _id: data.orderId });
+    const order = await this.orderModel.findOne({ _id: data.orderId });
+    if (!order) {
+      throw ApiError.error(Messages.ORDER_NOT_FOUND);
+    }
+
+    const book = await this.bookModel.findOne({ productId: order.productId });
+    return { order, book };
   }
 
   async createOrder(data: CreateOrderDto) {
